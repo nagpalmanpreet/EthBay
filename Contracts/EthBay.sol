@@ -136,14 +136,6 @@ contract EthBay {
     function addProduct(
         uint storeId, string memory name, string memory description, uint inventory, uint price, string memory image
         ) public  {
-        /**
-         * @dev Add a new product for a store
-         * @param storeFrontId store front id for the new product
-         * @param name Name of the product
-         * @param description Description of the product
-         * @param inventory Quantity in inventory
-         * @param price Price of the product (in Wei)
-         */
         Product storage product_ = products[nextProductId - 1];
         product_.storeId = storeId;
         product_.product_id = nextProductId;
