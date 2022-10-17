@@ -154,7 +154,7 @@ contract EthBay {
 
     event ProductEdited(uint id);
     function editProduct(uint productId, uint inventory, uint price) public  {
-        Product storage product_ = products[productId];
+        Product storage product_ = products[productId - 1];
         require(product_.seller == msg.sender, "Only the Seller can edit products");
         product_.inventory = inventory;
         product_.price = price;
