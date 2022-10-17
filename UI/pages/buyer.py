@@ -55,54 +55,36 @@ accounts = w3.eth.accounts
 buyer_address = st.selectbox("Select buyer address", options=accounts)
 
 
+
 ################################################################################
 # Display Products
 ################################################################################
-try:
-    total_stores = contract.functions.nextStoreFrontId().call()
-    stores = []
-    iterator = 0
-    for iterator in range(total_stores):   
-        stores.append(contract.functions.storeFronts(iterator).call()[0])
+products = []
+products_dict = {}
+total_products = contract.functions.nextProductId().call() - 1
+for iterator in range(total_products):
+    product = contract.functions.products(iterator).call()
+    products.append(product)
+    products_dict[product[3]] = product
+
+product_list = products_dict.keys()
 
 
-    products_info=[]
+buyer_product = st.selectbox("Select Product", options=product_list)
 
-    for iterator in range(len(stores)):
-        store_products = contract.functions.getProductsForStore(iterator).call()
-        for inner_iterator in range(len(store_products)):
-            products_info.append(contract.functions.products(store_products[inner_iterator]).call())
-    products = []
-    products_dict = {}
-    products_name_dict = {}
-    for iterator in range(len(products_info)):
-        products.append(products_info[iterator][2])
-        products_dict[iterator] = products_info[iterator]
-        products_name_dict[products_info[iterator][2]] = iterator
-
-    buyer_product = st.selectbox("Select Product", options=products)
-    product_code = products_name_dict[buyer_product]
-    product_info = products_dict[product_code]
-    product_price = product_info[5]
-
-    #temp = {}
-    #temp[product_info[2]] = product_info
-   # st.write(temp)
-    #print(temp)
-    #st.table(pd.DataFrame.from_dict(temp))
-    product_price_eth = w3.fromWei(product_info[5], "ether")
-    st.write(product_price_eth)
-    df = pd.DataFrame({
-                        'Seller': [product_info[1]],
-                        'Description': [product_info[3]],
-                        'Items Available': [product_info[4]],
-                        'Price(in Wei)': [product_info[5]],
-                        'Image': [product_info[6]]
+df = pd.DataFrame({
+                    'Seller': products_dict[buyer_product][2],
+                    'Description': products_dict[buyer_product][4],
+                    'Items Available': products_dict[buyer_product][5],
+                    'Price(in Wei)': str(products_dict[buyer_product][6]),
+                    'Image': products_dict[buyer_product][7]
         },
-        index=[product_info[2]])
-    st.table(df)
-except:
-    st.write('in error')
+        index=[products_dict[buyer_product][1]])
+st.table(df)
+
+product_code = products_dict[buyer_product][1]
+product_price = products_dict[buyer_product][6]
+
 
 try:
     # Display  Image
@@ -110,7 +92,7 @@ try:
     with col1:
         st.write(' ')
     with col2:
-        st.image(product_info[6])
+        st.image(products_dict[buyer_product][7])
     with col3:
         st.write(' ')
     

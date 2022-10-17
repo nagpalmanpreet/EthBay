@@ -3,64 +3,6 @@
 		"constant": true,
 		"inputs": [
 			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "storeOwners",
-		"outputs": [
-			{
-				"name": "enabled",
-				"type": "bool"
-			},
-			{
-				"name": "balance",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "storeFronts",
-		"outputs": [
-			{
-				"name": "id",
-				"type": "uint256"
-			},
-			{
-				"name": "name",
-				"type": "string"
-			},
-			{
-				"name": "description",
-				"type": "string"
-			},
-			{
-				"name": "storeFrontOwner",
-				"type": "address"
-			},
-			{
-				"name": "storeOnline",
-				"type": "bool"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
 				"name": "storeId",
 				"type": "uint256"
 			}
@@ -70,80 +12,6 @@
 			{
 				"name": "",
 				"type": "uint256[]"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "withdrawMarketplaceFunds",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "nextStoreFrontId",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "name",
-				"type": "string"
-			},
-			{
-				"name": "description",
-				"type": "string"
-			}
-		],
-		"name": "addStoreFront",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [],
-		"name": "toggleOnline",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "admins",
-		"outputs": [
-			{
-				"name": "enabled",
-				"type": "bool"
 			}
 		],
 		"payable": false,
@@ -187,20 +55,6 @@
 		"constant": false,
 		"inputs": [
 			{
-				"name": "storeOwner",
-				"type": "address"
-			}
-		],
-		"name": "disableStoreOwner",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
 				"name": "productId",
 				"type": "uint256"
 			},
@@ -216,48 +70,15 @@
 		"type": "function"
 	},
 	{
-		"constant": false,
-		"inputs": [
+		"constant": true,
+		"inputs": [],
+		"name": "nextStoreId",
+		"outputs": [
 			{
-				"name": "amount",
+				"name": "",
 				"type": "uint256"
 			}
 		],
-		"name": "forcedWithdraw",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "online",
-		"outputs": [
-			{
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "storeOwner",
-				"type": "address"
-			}
-		],
-		"name": "isStoreOwner",
-		"outputs": [
-			{
-				"name": "",
-				"type": "bool"
-			}
-		],
 		"payable": false,
 		"stateMutability": "view",
 		"type": "function"
@@ -265,7 +86,7 @@
 	{
 		"constant": false,
 		"inputs": [],
-		"name": "storeOwnerWithdraw",
+		"name": "sellerWithdraw",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
@@ -286,31 +107,66 @@
 		"type": "function"
 	},
 	{
-		"constant": false,
+		"constant": true,
 		"inputs": [
 			{
-				"name": "newAdmin",
+				"name": "",
 				"type": "address"
 			}
 		],
-		"name": "addAdmin",
-		"outputs": [],
+		"name": "sellers",
+		"outputs": [
+			{
+				"name": "seller_id",
+				"type": "uint256"
+			},
+			{
+				"name": "enabled",
+				"type": "bool"
+			},
+			{
+				"name": "balance",
+				"type": "uint256"
+			}
+		],
 		"payable": false,
-		"stateMutability": "nonpayable",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
 		"constant": false,
 		"inputs": [
 			{
-				"name": "admin",
-				"type": "address"
+				"name": "productId",
+				"type": "uint256"
+			},
+			{
+				"name": "inventory",
+				"type": "uint256"
+			},
+			{
+				"name": "price",
+				"type": "uint256"
 			}
 		],
-		"name": "disableAdmin",
+		"name": "editProduct",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "nextSellerId",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -324,11 +180,15 @@
 		"name": "products",
 		"outputs": [
 			{
-				"name": "storeFrontId",
+				"name": "storeId",
 				"type": "uint256"
 			},
 			{
-				"name": "productOwner",
+				"name": "product_id",
+				"type": "uint256"
+			},
+			{
+				"name": "seller",
 				"type": "address"
 			},
 			{
@@ -372,13 +232,8 @@
 	},
 	{
 		"constant": false,
-		"inputs": [
-			{
-				"name": "storeOwner",
-				"type": "address"
-			}
-		],
-		"name": "addStoreOwner",
+		"inputs": [],
+		"name": "withdrawEthBayFunds",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
@@ -388,7 +243,7 @@
 		"constant": false,
 		"inputs": [
 			{
-				"name": "storeFrontId",
+				"name": "storeId",
 				"type": "uint256"
 			},
 			{
@@ -436,23 +291,11 @@
 		"constant": false,
 		"inputs": [
 			{
-				"name": "storeFront",
-				"type": "uint256"
-			},
-			{
-				"name": "name",
-				"type": "string"
-			},
-			{
-				"name": "description",
-				"type": "string"
-			},
-			{
-				"name": "storeOnline",
-				"type": "bool"
+				"name": "seller",
+				"type": "address"
 			}
 		],
-		"name": "editStoreFront",
+		"name": "addSeller",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
@@ -462,7 +305,42 @@
 		"constant": false,
 		"inputs": [
 			{
-				"name": "productId",
+				"name": "newCommission",
+				"type": "uint256"
+			}
+		],
+		"name": "changeCommission",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "commission",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "stores",
+		"outputs": [
+			{
+				"name": "store_id",
 				"type": "uint256"
 			},
 			{
@@ -474,18 +352,53 @@
 				"type": "string"
 			},
 			{
-				"name": "inventory",
-				"type": "uint256"
+				"name": "seller",
+				"type": "address"
 			},
 			{
-				"name": "price",
-				"type": "uint256"
+				"name": "storeOnline",
+				"type": "bool"
 			}
 		],
-		"name": "editProduct",
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"name": "description",
+				"type": "string"
+			}
+		],
+		"name": "addStore",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "seller",
+				"type": "address"
+			}
+		],
+		"name": "isSeller",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -493,30 +406,6 @@
 		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "constructor"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "newAdmin",
-				"type": "address"
-			}
-		],
-		"name": "AdminAdded",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "admin",
-				"type": "address"
-			}
-		],
-		"name": "AdminDisabled",
-		"type": "event"
 	},
 	{
 		"anonymous": false,
@@ -537,7 +426,7 @@
 				"type": "uint256"
 			}
 		],
-		"name": "AdminWithdrewFunds",
+		"name": "OwnerWithdrewFunds",
 		"type": "event"
 	},
 	{
@@ -545,11 +434,11 @@
 		"inputs": [
 			{
 				"indexed": false,
-				"name": "storeOwner",
+				"name": "seller",
 				"type": "address"
 			}
 		],
-		"name": "StoreOwnerAdded",
+		"name": "SellerAdded",
 		"type": "event"
 	},
 	{
@@ -557,28 +446,16 @@
 		"inputs": [
 			{
 				"indexed": false,
-				"name": "storeOwner",
-				"type": "address"
-			}
-		],
-		"name": "StoreOwnerDisabled",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "status",
-				"type": "bool"
+				"name": "newCommission",
+				"type": "uint256"
 			},
 			{
 				"indexed": false,
-				"name": "caller",
-				"type": "address"
+				"name": "oldCommission",
+				"type": "uint256"
 			}
 		],
-		"name": "ToggleMarketplace",
+		"name": "OwnerChangedCommission",
 		"type": "event"
 	},
 	{
@@ -586,11 +463,11 @@
 		"inputs": [
 			{
 				"indexed": false,
-				"name": "storeOwner",
+				"name": "seller",
 				"type": "address"
 			}
 		],
-		"name": "StoreOwnerWithdraw",
+		"name": "SellerWithdraw",
 		"type": "event"
 	},
 	{
@@ -602,19 +479,7 @@
 				"type": "uint256"
 			}
 		],
-		"name": "NewStoreFrontId",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "id",
-				"type": "uint256"
-			}
-		],
-		"name": "StoreFrontEdited",
+		"name": "NewStoreAdded",
 		"type": "event"
 	},
 	{
@@ -651,33 +516,16 @@
 			},
 			{
 				"indexed": false,
-				"name": "storeowner",
+				"name": "seller",
 				"type": "address"
 			},
 			{
 				"indexed": false,
-				"name": "profit",
+				"name": "owner_profit",
 				"type": "uint256"
 			}
 		],
 		"name": "ProductBought",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "amount",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"name": "calledBy",
-				"type": "address"
-			}
-		],
-		"name": "ForcedWithdrawExecuted",
 		"type": "event"
 	}
 ]

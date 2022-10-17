@@ -62,16 +62,38 @@ st.write(f"The Owner wallet has  {owner_eth_balalnce} Eth.")
 # Display Stores
 ################################################################################
 st.title("Stores on EthBay")
-total_stores = contract.functions.nextStoreFrontId().call()
+st.write('')
+total_stores = contract.functions.nextStoreId().call() - 1
+st.write(f"Total Stores on EthBay :  {total_stores}")
 stores = []
 iterator = 0
 for iterator in range(total_stores):   
-    stores.append(contract.functions.storeFronts(iterator).call())
+    stores.append(contract.functions.stores(iterator).call())
 df = pd.DataFrame(stores, columns=['StoreID', 'Store Name','Store Decsription', 'Seller', 'Is Active'])   
 st.table(df)
 
-total_products = contract.functions.nextProductId().call()
+total_products = contract.functions.nextProductId().call() - 1
+
+
+
+################################################################################
+# Display Products
+################################################################################
+st.title("Products on EthBay")
+st.write('')
 st.write(f"Total Products on EthBay :  {total_products}")
+products = []
+products_dict = {}
+total_products = contract.functions.nextProductId().call() - 1
+for iterator in range(total_products):
+    product = contract.functions.products(iterator).call()
+    products.append(product)
+    products_dict[product[3]] = product
+
+df = pd.DataFrame(products, columns=['StoreID', 'ProductID','Seller', 'Name', 'Description','Quantity', 'Price', 'Image'])   
+st.table(df)
+
+
 
 ################################################################################
 # Register Selller
@@ -84,12 +106,12 @@ seller_address = st.selectbox("Seller Account", options=accounts)
 if st.button("Register Seller"):
 
     # Check if seller is already registered
-    is_seller = contract.functions.isStoreOwner(seller_address).call()
+    is_seller = contract.functions.isSeller(seller_address).call()
     if is_seller:
         st.write("Seller already registered.")
     else:
         # Use the contract to send a transaction to the registerArtwork function
-        tx_hash = contract.functions.addStoreOwner(
+        tx_hash = contract.functions.addSeller(
             seller_address,
         ).transact({'from': owner_address, 'gas': 1000000})
         receipt = w3.eth.waitForTransactionReceipt(tx_hash)
@@ -106,15 +128,25 @@ if st.button("Register Seller"):
 st.title("Check EthBay Balance")
 
 
-contract_balance = contract.functions.balance().call()
-
 if st.button("Get Balance"):
 
-    # Use the contract to send a transaction to the registerArtwork function
-    contract_balance = contract.functions.balance().call()   
-    st.write(f"Contract Balance :  {contract_balance} Wei")
+    contract_balance = contract.functions.balance().call()  
+    contract_balance = w3.fromWei(contract_balance, "ether") 
+    st.write(f"Contract Balance :  {contract_balance} Eth")
 
 ################################################################################
 # Withdraw Balance
 ################################################################################
 st.title("Withdraw Balance")
+
+if st.button("Withdraw Balance"):
+    contract_balance = contract.functions.balance().call()
+    try:
+        contract.functions.withdrawEthBayFunds().transact({'from': owner_address, 'gas': 1000000})
+        owner_wei_balance = w3. eth. getBalance(owner_address); 
+        owner_eth_balalnce = w3.fromWei(owner_wei_balance, "ether")
+        st.write(f"{contract_balance} Wei transferred to {owner_address} ")
+        st.write(f"Owner balance : {owner_eth_balalnce}  Eth ")
+    except:
+        st.write('Error')
+

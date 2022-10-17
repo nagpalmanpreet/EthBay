@@ -58,21 +58,31 @@ skip_add_store = False
 
 if st.button("Proceed"):
     try:
-        store_id = contract.functions.getStoreForSeller(seller_address).call()[0]
-        store_info= contract.functions.storeFronts(store_id).call()
-        store.append(store_info)
+        store_ids = contract.functions.getStoreForSeller(seller_address).call()
+        #st.write('Store ID : ', store_ids)
+        for store_iterator in range(len(store_ids)):
+            store_info= contract.functions.stores((store_ids[store_iterator])-1).call()
+            #st.write(store_info)          
+            store.append(store_info)
         df = pd.DataFrame(store, columns=['StoreID', 'Store Name','Store Description', 'Seller', 'Is Active'])
         df = df.drop(columns=['Seller', 'Is Active']) 
-        st.write("Your Store")  
+        st.header("Your Stores") 
         st.table(df)
-        store_products = contract.functions.getProductsForStore(store_id).call()
+
+        store_products = []
+        for store in store_ids:   
+            store_products.append(contract.functions.getProductsForStore(store).call())
+        
+        
     
         products = []
         for iterator in range(len(store_products)):
-            products.append(contract.functions.products(store_products[iterator]).call())
-        df = pd.DataFrame(products, columns=['StoreID', 'Seller','Name', 'Description', 'Inventory','Price','Image'])
-        df = df.drop(columns=['StoreID', 'Seller'])   
-        st.write("Your Products")    
+            for inner_iterator in range(len(store_products[iterator])):
+                product_id = store_products[iterator][inner_iterator]
+                products.append(contract.functions.products(product_id - 1).call())
+        df = pd.DataFrame(products, columns=['StoreID', 'ProductID','Seller','Name', 'Description', 'Inventory','Price','Image'])
+        df = df.drop(columns=['Seller'])   
+        st.header("Your Products")    
         st.write(df)  
 
 
@@ -92,30 +102,31 @@ store_description = st.text_input("Store Description")
 
 if st.button("Add Store"):
     # Check if seller is already registered
-    is_seller = contract.functions.isStoreOwner(seller_address).call()
+    is_seller = contract.functions.isSeller(seller_address).call()
     if is_seller:
         #own_store = contract.functions.storeOwners(seller_address).call()[0]
-        tx_hash = contract.functions.addStoreFront(
+        tx_hash = contract.functions.addStore(
                     store_name,
                     store_description
                     ).transact({'from': seller_address, 'gas': 1000000})
         receipt = w3.eth.waitForTransactionReceipt(tx_hash)
         st.write("Store Added")
         st.write(dict(receipt))
-        total_stores = contract.functions.nextStoreFrontId().call()
+        total_stores = contract.functions.nextStoreId().call() - 1
         st.write(f"Total Stores on EthBay :  {total_stores}")
     else:
         st.write("You are not registered as a seller. Only seller can add a store")
 
 ################################################################################
-# Add Products
+# Add Product
 ################################################################################
 st.title("Add Product")
 product_name = st.text_input("Name")
 product_description = st.text_input("Description")
 product_inventory = st.number_input('Inventory',min_value=1,step=1)
 product_price = st.text_input("Price (in wei)")
-product_id = contract.functions.nextProductId().call() + 1
+store_id = st.text_input("Store ID")
+product_id = contract.functions.nextProductId().call()
 image_name = str(product_id) + '.jpg'
 
 image_local_url = '../Images/' + image_name
@@ -147,26 +158,36 @@ if uploaded_file is not None:
 
 
 if st.button("Add Product"):
-    try:
-        if int(product_price) < 0:
-          st.error('Enter a valid price')
-    except:
-        st.error('Enter a valid price')
-    store_id = contract.functions.getStoreForSeller(seller_address).call()[0]
-    st.write(store_id)
     tx_hash = contract.functions.addProduct(
-                    store_id,
-                    product_name,
-                    product_description,
-                    product_inventory,
-                    int(product_price),
-                    url
-                    ).transact({'from': seller_address, 'gas': 1000000})
+                int(store_id),
+                product_name,
+                product_description,
+                product_inventory,
+                int(product_price),
+                url
+                ).transact({'from': seller_address, 'gas': 1000000})
     receipt = w3.eth.waitForTransactionReceipt(tx_hash)
     st.write("Product Added")
-    st.write(dict(receipt))
-    total_products = contract.functions.nextProductId().call()
-    st.write(f"Total Products on EthBay :  {total_products}")
+    st.write(dict(receipt)) 
+
+
+################################################################################
+# Edit Product
+################################################################################
+st.title("Edit Product")
+product_inventory = st.number_input('Updated Inventory',min_value=1,step=1)
+product_price = st.text_input("Updated Price (in wei)")
+product_id = st.number_input('Product ID',min_value=1,step=1)
+
+if st.button("Edit Product"):
+    tx_hash = contract.functions.editProduct(
+                product_id,
+                product_inventory,
+                int(product_price)
+                ).transact({'from': seller_address, 'gas': 1000000})
+    receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+    st.write("Product Edited")
+    st.write(dict(receipt)) 
     
 ################################################################################
 # Check Balance
@@ -176,8 +197,8 @@ st.title("Check Balance")
 if st.button("Check Balance"):
     # Check if seller is already registered
     st.write(f"Checking Balance for  :  {seller_address}")
-    seller = contract.functions.storeOwners(seller_address).call()
-    st.write(f"Seller Balance :  {seller[1]} Wei")
+    seller = contract.functions.sellers(seller_address).call()
+    st.write(f"Seller Balance :  {seller[2]} Wei")
 
 ################################################################################
 # Withdraw Balance
@@ -185,8 +206,8 @@ if st.button("Check Balance"):
 st.title("Withdraw Balance")
 if st.button("Withdraw Balance"):
     
-    balance = contract.functions.storeOwners(seller_address).call()[1]
-    tx_hash = contract.functions.storeOwnerWithdraw().transact({'from': seller_address, 'gas': 1000000})
+    balance = contract.functions.sellers(seller_address).call()[2]
+    tx_hash = contract.functions.sellerWithdraw().transact({'from': seller_address, 'gas': 1000000})
     receipt = w3.eth.waitForTransactionReceipt(tx_hash)
     st.write(f"{balance} Wei transferred to {seller_address}")
     st.write(dict(receipt))
