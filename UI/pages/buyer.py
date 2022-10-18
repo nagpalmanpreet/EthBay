@@ -72,19 +72,23 @@ product_list = products_dict.keys()
 
 buyer_product = st.selectbox("Select Product", options=product_list)
 
-df = pd.DataFrame({
-                    'Seller': products_dict[buyer_product][2],
-                    'Description': products_dict[buyer_product][4],
-                    'Items Available': products_dict[buyer_product][5],
-                    'Price(in Wei)': str(products_dict[buyer_product][6]),
-                    'Image': products_dict[buyer_product][7]
-        },
-        index=[products_dict[buyer_product][1]])
-st.table(df)
+try:
+    df = pd.DataFrame({
+                        'Seller': products_dict[buyer_product][2],
+                        'Description': products_dict[buyer_product][4],
+                        'Items Available': products_dict[buyer_product][5],
+                        'Price(in Eth)': w3.fromWei(products_dict[buyer_product][6], "ether") ,
+                        'Image': products_dict[buyer_product][7]
+            },
+            index=[products_dict[buyer_product][1]])
+    st.table(df)
 
-product_code = products_dict[buyer_product][1]
-product_price = products_dict[buyer_product][6]
 
+    product_code = products_dict[buyer_product][1]
+    product_price = products_dict[buyer_product][6]
+
+except:
+    ''
 
 try:
     # Display  Image
@@ -100,13 +104,20 @@ except:
     ''
 
 input_quantity = st.number_input('Quantity',min_value=1,step=1)
+st.write("Input Quantity ", input_quantity)
+st.write("Price In Wei ", product_price)
 
 if st.button("Buy"):
-    value = input_quantity * product_price
-    tx_hash = contract.functions.buyProduct(
-                    product_code,
-                    input_quantity
-                    ).transact({'from': buyer_address,'value':value, 'gas': 1000000})
-    receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-    st.write("Payment Succesful")
-    st.write(dict(receipt))
+    try:
+        value = input_quantity * product_price
+        st.write("value in Wei ", value)
+        tx_hash = contract.functions.buyProduct(
+                        product_code,
+                        input_quantity                       
+                        ).transact({'from': buyer_address,'value':value, 'gas': 1000000})
+                        
+        receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+        st.write("Payment Succesful")
+        st.write(dict(receipt))
+    except:
+        st.write("Function not available currently.")

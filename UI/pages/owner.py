@@ -53,7 +53,7 @@ st.title("Eth Bay")
 owner_address = contract.functions.owner().call()
 st.write(f"The Owner is {owner_address}")
 
-owner_wei_balance = w3. eth. getBalance(owner_address); 
+owner_wei_balance = w3.eth.getBalance(owner_address); 
 # Convert Wei value to ether
 owner_eth_balalnce = w3.fromWei(owner_wei_balance, "ether")
 st.write(f"The Owner wallet has  {owner_eth_balalnce} Eth.")
@@ -92,6 +92,7 @@ for iterator in range(total_products):
 
 df = pd.DataFrame(products, columns=['StoreID', 'ProductID','Seller', 'Name', 'Description','Quantity', 'Price', 'Image'])   
 st.table(df)
+
 
 
 
@@ -141,12 +142,15 @@ st.title("Withdraw Balance")
 
 if st.button("Withdraw Balance"):
     contract_balance = contract.functions.balance().call()
-    try:
-        contract.functions.withdrawEthBayFunds().transact({'from': owner_address, 'gas': 1000000})
-        owner_wei_balance = w3. eth. getBalance(owner_address); 
-        owner_eth_balalnce = w3.fromWei(owner_wei_balance, "ether")
-        st.write(f"{contract_balance} Wei transferred to {owner_address} ")
-        st.write(f"Owner balance : {owner_eth_balalnce}  Eth ")
-    except:
-        st.write('Error')
+    if contract_balance > 0:
+        try:
+            contract.functions.withdrawEthBayFunds().transact({'from': owner_address, 'gas': 1000000})
+            owner_wei_balance = w3. eth. getBalance(owner_address); 
+            owner_eth_balalnce = w3.fromWei(owner_wei_balance, "ether")
+            st.write(f"{contract_balance} Wei transferred to {owner_address} ")
+            st.write(f"Owner balance : {owner_eth_balalnce}  Eth ")
+        except:
+            st.write('Error')
+    else:
+        st.write("Contract doesn't have enough ETH to withdraw")
 
