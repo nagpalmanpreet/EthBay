@@ -5,7 +5,10 @@ from pathlib import Path
 import pandas as pd
 from dotenv import load_dotenv
 import streamlit as st
+import numpy as np
 from PIL import Image
+import decimal
+
 
 load_dotenv()
 
@@ -69,7 +72,8 @@ stores = []
 iterator = 0
 for iterator in range(total_stores):   
     stores.append(contract.functions.stores(iterator).call())
-df = pd.DataFrame(stores, columns=['StoreID', 'Store Name','Store Decsription', 'Seller', 'Is Active'])   
+df = pd.DataFrame(stores, columns=['StoreID', 'Store Name','Store Decsription', 'Seller', 'Is Active'])
+df = df.drop(columns=['Is Active']) 
 st.table(df)
 
 total_products = contract.functions.nextProductId().call() - 1
@@ -90,8 +94,9 @@ for iterator in range(total_products):
     products.append(product)
     products_dict[product[3]] = product
 
-df = pd.DataFrame(products, columns=['StoreID', 'ProductID','Seller', 'Name', 'Description','Quantity', 'Price', 'Image'])   
+df = pd.DataFrame(products, columns=['StoreID', 'ProductID','Seller', 'Name', 'Description','Quantity', 'Price (in Wei)', 'Image'])
 st.table(df)
+
 
 
 

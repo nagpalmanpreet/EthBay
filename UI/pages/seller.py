@@ -128,7 +128,7 @@ product_description = st.text_input("Description")
 product_inventory = st.number_input('Inventory',min_value=1,step=1)
 product_price = st.number_input(label="Price ( in ETH)",step=1.,format="%.2f")
 product_price_wei = w3.toWei(product_price, "ether")
-store_id = st.text_input("Store ID")
+store_id = st.number_input('Store ID',min_value=1,step=1)
 product_id = contract.functions.nextProductId().call()
 image_name = str(product_id) + '.jpg'
 
@@ -160,22 +160,27 @@ if uploaded_file is not None:
         url = 'https://gateway.pinata.cloud/ipfs/' + response.json()['IpfsHash']
 
 
+
+store_seller = contract.functions.stores(store_id - 1).call()[3]
 if st.button("Add Product"):
-    try:
-        st.write("price in wei ", product_price_wei)
-        tx_hash = contract.functions.addProduct(
-                    int(store_id),
-                    product_name,
-                    product_description,
-                    product_inventory,
-                    product_price_wei,
-                    url
-                    ).transact({'from': seller_address, 'gas': 1000000})
-        receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-        st.write("Product Added")
-        st.write(dict(receipt))
-    except:
-        st.write("Function not available currently.")
+    if store_seller == seller_address:
+        try:
+            st.write("price in wei ", product_price_wei)
+            tx_hash = contract.functions.addProduct(
+                        store_id,
+                        product_name,
+                        product_description,
+                        product_inventory,
+                        product_price_wei,
+                        url
+                        ).transact({'from': seller_address, 'gas': 1000000})
+            receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+            st.write("Product Added")
+            st.write(dict(receipt))
+        except:
+            st.write("Function not available currently.")
+    else:
+        st.write("You are not store owner.")
 
 
 ################################################################################
@@ -188,19 +193,23 @@ product_price_wei = w3.toWei(product_price, "ether")
 product_id = st.number_input('Product ID',min_value=1,step=1)
 
 st.write("price in wei ", product_price_wei)
+store_seller = contract.functions.products(product_id - 1).call()[2]
 
 if st.button("Edit Product"):
-    try:
-        tx_hash = contract.functions.editProduct(
-                    product_id,
-                    product_inventory,
-                    product_price_wei
-                    ).transact({'from': seller_address, 'gas': 1000000})
-        receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-        st.write("Product Edited")
-        st.write(dict(receipt)) 
-    except:
-        st.write("Function not available currently.")
+    if store_seller == seller_address:
+        try:
+            tx_hash = contract.functions.editProduct(
+                        product_id,
+                        product_inventory,
+                        product_price_wei
+                        ).transact({'from': seller_address, 'gas': 1000000})
+            receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+            st.write("Product Edited")
+            st.write(dict(receipt)) 
+        except:
+            st.write("Function not available currently.")
+    else:
+        st.write("You are not Product owner.")
     
 ################################################################################
 # Check Balance
@@ -218,12 +227,16 @@ if st.button("Check Balance"):
 ################################################################################
 st.title("Withdraw Balance")
 if st.button("Withdraw Balance"):
-    try:
-        balance = contract.functions.sellers(seller_address).call()[2]
-        tx_hash = contract.functions.sellerWithdraw().transact({'from': seller_address, 'gas': 1000000})
-        receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-        st.write(f"{balance} Wei transferred to {seller_address}")
-        st.write(dict(receipt))
-    except:
-        st.write("Function not available currently.")
+    seller_balance = contract.functions.sellers(seller_address).call()[2]
+    if seller_balance > 0:
+        try:
+            balance = contract.functions.sellers(seller_address).call()[2]
+            tx_hash = contract.functions.sellerWithdraw().transact({'from': seller_address, 'gas': 1000000})
+            receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+            st.write(f"{balance} Wei transferred to {seller_address}")
+            st.write(dict(receipt))
+        except:
+            st.write("Function not available currently.")
+    else:
+        st.write("You don't have enough ETH to withdraw")
 

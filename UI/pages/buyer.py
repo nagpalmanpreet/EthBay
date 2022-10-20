@@ -54,6 +54,11 @@ accounts = w3.eth.accounts
 
 buyer_address = st.selectbox("Select buyer address", options=accounts)
 
+buyer_wei_balance = w3.eth.getBalance(buyer_address); 
+buyer_eth_balalnce = w3.fromWei(buyer_wei_balance, "ether")
+st.header(f"Your wallet have  {buyer_eth_balalnce} Eth.")
+
+
 
 
 ################################################################################
@@ -77,8 +82,9 @@ try:
                         'Seller': products_dict[buyer_product][2],
                         'Description': products_dict[buyer_product][4],
                         'Items Available': products_dict[buyer_product][5],
-                        'Price(in Eth)': w3.fromWei(products_dict[buyer_product][6], "ether") ,
-                        'Image': products_dict[buyer_product][7]
+                        #'Price(in Eth)': w3.fromWei(products_dict[buyer_product][6], "ether") ,
+                        #'Price(in Wei)': products_dict[buyer_product][6] ,
+                        #'Image': products_dict[buyer_product][7]
             },
             index=[products_dict[buyer_product][1]])
     st.table(df)
@@ -86,6 +92,7 @@ try:
 
     product_code = products_dict[buyer_product][1]
     product_price = products_dict[buyer_product][6]
+    st.write("Price(in Eth) : ", float(w3.fromWei(product_price, "ether")))
 
 except:
     ''
@@ -104,8 +111,6 @@ except:
     ''
 
 input_quantity = st.number_input('Quantity',min_value=1,step=1)
-st.write("Input Quantity ", input_quantity)
-st.write("Price In Wei ", product_price)
 
 if st.button("Buy"):
     try:
