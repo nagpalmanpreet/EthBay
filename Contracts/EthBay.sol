@@ -45,7 +45,7 @@ contract EthBay {
         string name;
         string description;
         uint inventory;
-        uint price;
+        uint256 price;
         string image;
     }
     mapping (uint => Product) public products; //map product to productId
@@ -134,9 +134,11 @@ contract EthBay {
 
     event ProductAdded(uint id);
     function addProduct(
-        uint storeId, string memory name, string memory description, uint inventory, uint price, string memory image
+        uint storeId, string memory name, string memory description, uint inventory, uint256 price, string memory image
         ) public  {
         Product storage product_ = products[nextProductId - 1];
+        Store storage store_ = stores[storeId-1];
+        require(store_.seller == msg.sender, "Only the Seller can add products");
         product_.storeId = storeId;
         product_.product_id = nextProductId;
         product_.seller = msg.sender;
@@ -144,8 +146,7 @@ contract EthBay {
         product_.description = description;
         product_.inventory = inventory;
         product_.price = price;
-        product_.image = image;
-        Store storage store_ = stores[storeId-1];
+        product_.image = image;       
         store_.products.push(nextProductId);
         emit ProductAdded(nextProductId);
         nextProductId ++;
@@ -153,7 +154,7 @@ contract EthBay {
 
 
     event ProductEdited(uint id);
-    function editProduct(uint productId, uint inventory, uint price) public  {
+    function editProduct(uint productId, uint inventory, uint256 price) public  {
         Product storage product_ = products[productId - 1];
         require(product_.seller == msg.sender, "Only the Seller can edit products");
         product_.inventory = inventory;
