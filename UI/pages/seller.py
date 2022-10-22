@@ -131,6 +131,7 @@ product_price_wei = w3.toWei(product_price, "ether")
 store_id = st.number_input('Store ID',min_value=1,step=1)
 product_id = contract.functions.nextProductId().call()
 image_name = str(product_id) + '.jpg'
+url = ''
 
 image_local_url = '../Images/' + image_name
 
